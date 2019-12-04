@@ -1,5 +1,3 @@
-walk(document.body);
-
 function walk(node) 
 {
 	var child, next;
@@ -26,9 +24,37 @@ function walk(node)
 	}
 }
 
+let regex = /a\.i\.|\b(ai|agi|artificial( |-)intelligence|ml|machine learning|deep learning)\b/gi;
+
 function handleText(textNode) {
 	var v = textNode.nodeValue;
-  v = v.replace(/a\.i\.|\b(ai|agi|artificial( |-)intelligence|ml|machine learning|deep learning)\b/gi, "Mark Zuckerberg")
-  v = v.replace(/(a)n mark zuckerberg/gi, "$1 Mark Zuckerberg");
-	textNode.nodeValue = v;
+  if (regex.test(v)) {
+    v = v.replace(regex, "Mark Zuckerberg")
+    v = v.replace(/(a)n mark zuckerberg/gi, "$1 Mark Zuckerberg");
+    textNode.nodeValue = v;
+  }
 }
+
+function checkEditable(node) {
+  var curr = node;
+  var count = 6;
+  while (curr && count-- > 0 && (curr = curr.parentNode)){
+    if (curr.contentEditable == "true") return true;
+  };
+  return false;
+}
+
+walk(document.body);
+
+var mutationObserver = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    if (mutation.addedNodes.length > 0 && !checkEditable(mutation.target)) {
+      walk(mutation.target);
+    }
+  });
+});
+
+mutationObserver.observe(document.body, {
+  childList: true,
+  subtree: true,
+});
