@@ -24,12 +24,14 @@ function walk(node)
 	}
 }
 
-let regex = /a\.i\.|\b(ai|agi|artificial( |-)intelligence|ml|machine learning|deep learning)\b/gi;
+let regex = /\b(artificial( |-)intelligence|machine learning|deep learning)\b/gi;
+let regexCS = /\b(A\.I\.|AI|AGI|ML)\b/g;
 
 function handleText(textNode) {
 	var v = textNode.nodeValue;
-  if (regex.test(v)) {
-    v = v.replace(regex, "Mark Zuckerberg")
+  if (regex.test(v) || regexCS.test(v)) {
+    v = v.replace(regex, "Mark Zuckerberg");
+    v = v.replace(regexCS, "Mark Zuckerberg");
     v = v.replace(/(a)n mark zuckerberg/gi, "$1 Mark Zuckerberg");
     textNode.nodeValue = v;
   }
